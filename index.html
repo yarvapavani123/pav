@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Fitness</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f7f7f7;
+        }
+
+        .container {
+            display: flex;
+            margin-top: 20px;
+            width: 90%;
+            gap: 20px;
+        }
+
+        .sidebar {
+            width: 30%;
+            background-color: #ffffff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            height: 280px;
+        }
+
+        .graph {
+            display: flex;
+            row-gap: 30px;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: flex-end;
+            background-color: #f0f4ff;
+            border: 1px dashed #ccccff;
+            padding: 10px;
+            position: relative;
+        }
+        #sidebar-graph {
+            height: 240px;
+        }
+
+        .bar {
+            width: 30%;
+            background-color: #e3eaff;
+            border: 1px solid #ccccff;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .graph1, .graph2, .graph3, .graph4, .graph5, .graph6 {
+            border: 1px solid black;
+            height: 30%;
+            width: 30%;
+            border-radius: 10px;
+            border: 1px solid #ccccff;
+            position: relative;
+            cursor: grab;
+        }
+
+        .graph1 .warm {
+            width: 98%;
+            border-radius: 0 0 10px 10px;
+            position: absolute;
+            background-color: #4367d1;
+            border: 1px solid #3434db;
+            height: 40%;
+            bottom: 0;
+        }
+
+        .graph2 .main {
+            width: 98%;
+            border-radius: 0 0 10px 10px;
+            position: absolute;
+            background-color: #4367d1;
+            border: 1px solid #3434db;
+            height: 70%;
+            bottom: 0;
+        }
+
+        .graph3 .cool {
+            width: 98%;
+            border-radius: 0 0 10px 10px;
+            position: absolute;
+            background-color: #4367d1;
+            border: 1px solid #3434db;
+            height: 50%;
+            bottom: 0;
+        }
+
+        .graph4 .two_steps, .graph4 .two_steps1 {
+            width: 45%;
+            position: absolute;
+            background-color: #4367d1;
+            border: 1px solid #3434db;
+        }
+
+        .graph4 .two_steps {
+            border-radius: 0 0 0 10px;
+            height: 50%;
+            bottom: 0;
+        }
+
+        .graph4 .two_steps1 {
+            margin-left: 53%;
+            border-radius: 0 0 10px 0;
+            height: 30%;
+            bottom: 0;
+        }
+
+        .graph5 .ramp_up1, .graph5 .ramp_up2, .graph5 .ramp_up3, .graph5 .ramp_up4 {
+            width: 20%;
+            position: absolute;
+            background-color: #4367d1;
+            border: 1px solid #3434db;
+        }
+
+        .graph5 .ramp_up1 {
+            border-radius: 0 0 0 10px;
+            height: 30%;
+            bottom: 0;
+        }
+
+        .graph5 .ramp_up2 {
+            margin-left: 21px;
+            border-radius: 0 0 0 0;
+            height: 40%;
+            bottom: 0;
+        }
+
+        .graph5 .ramp_up3 {
+            margin-left: 44px;
+            border-radius: 0 0 0 0;
+            height: 50%;
+            bottom: 0;
+        }
+
+        .graph5 .ramp_up4 {
+            margin-left: 66px;
+            border-radius: 0 0 10px 0;
+            height: 60%;
+            bottom: 0;
+        }
+
+        .graph6 .ramp1, .graph6 .ramp2, .graph6 .ramp3, .graph6 .ramp4 {
+            width: 21%;
+            position: absolute;
+            background-color: #4367d1;
+            border: 1px solid #3434db;
+        }
+
+        .graph6 .ramp1 {
+            border-radius: 0 0 0 10px;
+            height: 60%;
+            bottom: 0;
+        }
+
+        .graph6 .ramp2 {
+            margin-left: 22px;
+            border-radius: 0 0 0 0;
+            height: 50%;
+            bottom: 0;
+        }
+
+        .graph6 .ramp3 {
+            margin-left: 44px;
+            border-radius: 0 0 0 0;
+            height: 40%;
+            bottom: 0;
+        }
+
+        .graph6 .ramp4 {
+            margin-left: 65px;
+
+            border-radius: 0 0 10px 0;
+            height: 30%;
+            bottom: 0;
+        }
+
+        .workout-section {
+            width: 700px;
+            height: 110px;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .workout-section h3 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .step {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .step .km {
+            font-weight: bold;
+            color: #4367d1;
+        }
+
+        .ellipsis {
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .add-substep {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #f0f4ff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-substep:hover {
+            background-color: #dce4ff;
+        }
+
+        .graph-area {
+            width: 80%;
+            background-color: #ffffff;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            height: 280px;
+        }
+
+        #graph {
+            background-color: #f0f4ff;
+            border: 1px dashed #ccccff;
+            padding: 10px;
+            height: 180px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+        }
+
+        .graph-area p {
+            font-size: 18px;
+        }
+
+        .graph-area .clear-button {
+            background-color: blue;
+            float: right;
+            border: none;
+            height: 30px;
+            width: 100px;
+            font-size: 14px;
+            color: white;
+            font-weight: 700px;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="graph" id="sidebar-graph">
+            <div class="graph1" data-name="Warm Up" draggable="true">
+                <div class="bar warm"></div>
+            </div>
+            <div class="graph2" data-name="Main Set" draggable="true">
+                <div class="bar main"></div>
+            </div>
+            <div class="graph3" data-name="Cool Down" draggable="true">
+                <div class="bar cool"></div>
+            </div>
+            <div class="graph4" data-name="Two Steps" draggable="true">
+                <div class="bar two_steps"></div>
+                <div class="bar two_steps1"></div>
+            </div>
+            <div class="graph5" data-name="Ramp Up" draggable="true">
+                <div class="bar ramp_up1"></div>
+                <div class="bar ramp_up2"></div>
+                <div class="bar ramp_up3"></div>
+                <div class="bar ramp_up4"></div>
+            </div>
+            <div class="graph6" data-name="Ramp Down" draggable="true">
+                <div class="bar ramp1"></div>
+                <div class="bar ramp2"></div>
+                <div class="bar ramp3"></div>
+                <div class="bar ramp4"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graph Area -->
+    <div class="graph-area">
+        <button class="clear-button" id="clear-button">Clear Graphs</button>
+        <p>Drag and drop the blocks into the graph area below:</p>
+        <div class="graph" id="graph"></div>
+    </div>
+</div>
+
+<!-- Details Section -->
+<div class="details">    <p>Details of Added Blocks:</p>
+    <div id="workout-list">
+        <!-- Dynamic workout sections will be appended here -->
+    </div>
+</div>
+
+<script>
+    const graphs = document.querySelectorAll('.sidebar .graph > div');
+    const graphArea = document.getElementById('graph');
+    const workoutList = document.getElementById('workout-list');
+    const clearButton = document.getElementById('clear-button');
+
+    // Enable drag events on the graphs
+    graphs.forEach(graph => {
+        graph.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('graph-type', graph.getAttribute('data-name'));
+            e.dataTransfer.setData('graph-html', graph.innerHTML);
+        });
+    });
+
+    // Add title attributes for hover functionality
+    graphs.forEach(graph => {
+        const graphName = graph.getAttribute('data-name');
+        if (graphName) {
+            graph.setAttribute('title', graphName);
+        }
+    });
+
+    // Enable drop events on the graph area
+    graphArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+    });
+
+    graphArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+
+        const graphType = e.dataTransfer.getData('graph-type');
+        const graphHTML = e.dataTransfer.getData('graph-html');
+
+        if (graphType) {
+            const newGraphElement = document.createElement('div');
+            newGraphElement.className = `graph-item ${graphType.toLowerCase().replace(/\s+/g, '-')}`;
+            newGraphElement.innerHTML = graphHTML;
+
+            // Adjust styles for added graphs to ensure consistent layout
+            newGraphElement.style.height = '100%';
+            newGraphElement.style.flex = '1';
+            newGraphElement.style.display = 'flex';
+            newGraphElement.style.justifyContent = 'space-around';
+            newGraphElement.style.alignItems = 'flex-end';
+
+            // Append the new graph element to the graph area
+            graphArea.appendChild(newGraphElement);
+
+            // Add the workout section below
+            const workoutSection = document.createElement('div');
+            workoutSection.className = 'workout-section';
+
+            workoutSection.innerHTML = `
+                <h3>${graphType}</h3>
+                <div class="step">
+                    <span>Run</span>
+                    <span class="km">2 KM</span>
+                    <span class="ellipsis">&#x22ee;</span>
+                </div>
+                <button class="add-substep">Add Substep</button>
+            `;
+
+            workoutList.appendChild(workoutSection);
+        }
+    });
+
+    // Clear all graphs from the graph area and workout list
+    clearButton.addEventListener('click', () => {
+        graphArea.innerHTML = '';
+        workoutList.innerHTML = '';
+    });
+</script>
+
+</body>
+</html>
